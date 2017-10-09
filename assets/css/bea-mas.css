@@ -1,0 +1,22 @@
+.vu__content {
+    display: none;
+}
+
+.vu__filter input[type="radio"]:checked + .vu__content {
+    display: block;
+}
+/**
+.vu__filter {
+    background-color: #fff;
+    box-shadow: 0 0 3px 3px rgba(0, 0, 0, .3);
+}
+
+.vu__filter label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.vu .dropit li {
+    list-style: none;
+}
+**/
