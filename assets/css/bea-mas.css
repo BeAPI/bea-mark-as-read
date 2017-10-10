@@ -1,22 +1,27 @@
-.vu__content {
+.tooltip_templates {
     display: none;
 }
-
-.vu__filter input[type="radio"]:checked + .vu__content {
+.vu__filter {
+    display: block;
+    width: 650px;
+    padding: 10px;
+}
+.li_is_col {
+    display: block;
+    width: 300px;
+    float: left;
+}
+.vu__filter label {
+    font-weight: 700;
+    display: block;
+    margin: 0 0 10px 0;
+}
+.clear {
+    clear: both;
     display: block;
 }
-/**
-.vu__filter {
-    background-color: #fff;
-    box-shadow: 0 0 3px 3px rgba(0, 0, 0, .3);
+.mas-tooltip {
+    color: #e9608e;
+    font-weight: 700;
+    text-decoration: none;
 }
-
-.vu__filter label {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.vu .dropit li {
-    list-style: none;
-}
-**/

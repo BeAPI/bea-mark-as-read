@@ -24,20 +24,25 @@ class Plugin {
 	}
 
 	/**
-	 * Load the plugin translation
+	 * Register assets JS/CSS
 	 */
 	public function wp_register_scripts() {
 		if ( is_admin() ) {
 			return false;
 		}
-		wp_register_style( 'bea-mas', BEA_MAS_URL . 'assets/css/bea-mas.css', false, BEA_MAS_VERSION, 'all' );
-		wp_register_style( 'dropit', BEA_MAS_URL . 'assets/css/dropit.css', false, '1.1.0', 'all' );
 
-		wp_register_script( 'dropit', BEA_MAS_URL . 'assets/js/dropit.min.js', array( 'jquery' ), '1.1.0', true );
-
+		// External libraries
+		wp_register_style( 'tooltipster', BEA_MAS_URL . 'assets/js/tooltipster/dist/css/tooltipster.bundle.min.css', false, '4.0', 'all' );
+		wp_register_style( 'tooltipster-theme', BEA_MAS_URL . 'assets/js/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-shadow.min.css', false, '4.0', 'all' );
+		wp_register_script( 'tooltipster', BEA_MAS_URL . 'assets/js/tooltipster/dist/js/tooltipster.bundle.min.js', array( 'jquery' ), '4.0', true );
+		wp_register_script( 'waypoints', BEA_MAS_URL . 'assets/js/waypoints/lib/jquery.waypoints.min.js', array('jquery'), '4.0.1', true );
+		
+		// Custom JS/CSS
+		wp_register_style ( 'bea-mas', BEA_MAS_URL . 'assets/css/bea-mas.css', false, BEA_MAS_VERSION, 'all' );
 		wp_register_script( 'bea-mas', BEA_MAS_URL . 'assets/js/bea-mas.js', array(
 			'jquery',
-			'dropit'
+			'tooltipster',
+			'waypoints'
 		), BEA_MAS_VERSION, true );
 		wp_localize_script( 'bea-mas', 'bea_mas', [
 			'ajax_url'          => admin_url( 'admin-ajax.php?action=bea_mas' ),
@@ -46,6 +51,11 @@ class Plugin {
 		] );
 	}
 
+	/**
+	 * Enqueue only for singular view
+	 * 
+	 * @return boolean
+	 */
 	public function wp_enqueue_scripts() {
 		global $post;
 
@@ -53,14 +63,23 @@ class Plugin {
 			return false;
 		}
 
-		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'bea-mas' ) ) {
-			wp_enqueue_script( 'dropit' );
+		if ( is_a( $post, 'WP_Post' ) ) {
 			wp_enqueue_script( 'bea-mas' );
+
 			wp_enqueue_style( 'bea-mas' );
-			wp_enqueue_style( 'dropit' );
+			wp_enqueue_style( 'tooltipster' );
+			wp_enqueue_style( 'tooltipster-theme' );
+
+			return true;
 		}
+
+		return false;
 	}
 
+	/**
+	 * Check AJAX request for set post meta if user
+	 * @return [type] [description]
+	 */
 	public function wp_ajax_counter() {
 		// Check member
 		if ( ! isset( $_POST['id'] ) || ! is_user_logged_in() || empty( $_POST['id'] ) ) {
@@ -92,6 +111,14 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Update meta with users array
+	 * 
+	 * @param  integer $object_id [description]
+	 * @param  integer $user_id   [description]
+	 * @param  array  $has_read   [description]
+	 * @return boolean            [description]
+	 */
 	private static function update_counter( $object_id, $user_id, $has_read = [] ) {
 		$has_read[] = $user_id;
 
@@ -101,6 +128,7 @@ class Plugin {
 		// check everything is ok
 		if ( false === $result ) {
 			wp_send_json_error( array( 'message' => 'Erreur de compteur' ) );
+			return false;
 		}
 
 		clean_post_cache( $object_id );
@@ -109,17 +137,29 @@ class Plugin {
 		wp_send_json_success( array(
 			'message' => 'Compteur à jour !',
 		) );
-	}
 
+		return true;
+	}
+	
 	/**
 	 * Generate the nonce name from current user
-	 *
+	 * 
+	 * @param  [type] $type      [description]
+	 * @param  [type] $object_id [description]
+	 * @return [type]            [description]
 	 */
 	public static function generate_nonce_name( $type, $object_id ) {
 		// Return the nonce name
 		return sprintf( '%s_%d', $type, $object_id );
 	}
 
+	/**
+	 * Check nonce from request
+	 * 
+	 * @param  [type] $action [description]
+	 * @param  string $name   [description]
+	 * @return [type]         [description]
+	 */
 	public static function check_nonce( $action, $name = '_wpnonce' ) {
 		return ! isset( $_REQUEST[ $name ] ) || ! wp_verify_nonce( $_REQUEST[ $name ], $action ) ? false : true;
 	}

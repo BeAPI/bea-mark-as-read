@@ -33,7 +33,7 @@ class Mas extends Shortcode {
 			return false;
 		}
 
-		$users_has_no_read = get_users( [ 'fields' => 'ids' ] );
+		$users_has_no_read = $all_users = get_users( [ 'fields' => 'ids' ] );
 		$users_has_read    = get_post_meta( get_the_ID(), 'bea_users_has_read', true );
 		if ( ! empty( $users_has_read ) ) {
 			$users_has_no_read = array_diff( $users_has_no_read, $users_has_read );
@@ -48,9 +48,9 @@ class Mas extends Shortcode {
 
 		ob_start();
 		require( Helpers::locate_template( 'mas' ) );
-		$glossary = ob_get_clean();
+		$output_html = ob_get_clean();
 
-		return $glossary;
+		return $output_html;
 	}
 
 

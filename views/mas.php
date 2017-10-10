@@ -1,33 +1,35 @@
 <?php
 
-$total_view = count( $users_has_read ); ?>
+$total_view = count( $users_has_read );
 
-<a href="">Vu par <?php echo $total_view ?> personnes</a>
+$pourcent = ceil( (count($users_has_read) / count($all_users) ) * 100 );
+?>
 
-
-<div class="vu">
-    <ul class="vu__filter">
-		<?php if ( ! empty( $users_has_read ) ) : ?>
-            <li>
-                <label for="vu">Vu</label>
-                <input type="radio" name="vu" id="vu" checked>
-                <ul class="vu__content">
-					<?php foreach ( $users_has_read as $u_unread ) : ?>
-                        <li><?php echo $u_unread->user_nicename ?></li>
-					<?php endforeach;; ?>
-                </ul>
-            </li>
-		<?php endif; ?>
-		<?php if ( ! empty( $users_has_no_read ) ) : ?>
-            <li>
-                <label for="pasvu">Pas vu</label>
-                <input type="radio" name="vu" id="pasvu">
-                <ul class="vu__content">
-					<?php foreach ( $users_has_no_read as $user_n_read ) : ?>
-                        <li><?php echo $user_n_read->user_nicename ?></li>
-					<?php endforeach;; ?>
-                </ul>
-            </li>
-		<?php endif; ?>
-    </ul>
+<a href="#" class="mas-tooltip tooltip" data-tooltip-content="#tooltip_content">Vu par <?php echo $total_view ?> personnes (<?php echo $pourcent; ?>%)</a>
+<div class="tooltip_templates">
+    <div id="tooltip_content" class="vu">
+        <ul class="vu__filter">
+    		<?php if ( ! empty( $users_has_read ) ) : ?>
+                <li class="li_is_col">
+                    <label for="vu">Vu</label>
+                    <ul class="vu__content">
+    					<?php foreach ( $users_has_read as $u_unread ) : ?>
+                            <li><?php echo $u_unread->first_name . ' ' . $u_unread->last_name; ?></li>
+    					<?php endforeach; ?>
+                    </ul>
+                </li>
+    		<?php endif; ?>
+    		<?php if ( ! empty( $users_has_no_read ) ) : ?>
+                <li class="li_is_col">
+                    <label for="pasvu">Pas vu</label>
+                    <ul class="vu__content">
+    					<?php foreach ( $users_has_no_read as $user_n_read ) : ?>
+                            <li><?php echo $user_n_read->first_name . ' ' . $user_n_read->last_name; ?></li>
+    					<?php endforeach; ?>
+                    </ul>
+                </li>
+    		<?php endif; ?>
+            <li class="clear"></li>
+        </ul>
+    </div>
 </div>

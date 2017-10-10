@@ -13,7 +13,7 @@ if (!fr.bea_mas) {
 
 fr.bea_mas.counter = {
     ajaxing: false,
-    init: function () {
+    init: function() {
         jQuery.ajax({
             url: bea_mas.ajax_url,
             dataType: 'json',
@@ -22,10 +22,10 @@ fr.bea_mas.counter = {
                 _wpnonce: bea_mas.ajax_nonce,
                 id: bea_mas.current_object_id
             },
-            beforeSend: function () {
+            beforeSend: function() {
                 fr.bea_mas.counter.ajaxing = true;
             },
-            success: function (response) {
+            success: function(response) {
                 fr.bea_mas.counter.ajaxing = false;
             }
         })
@@ -33,42 +33,21 @@ fr.bea_mas.counter = {
     }
 };
 
-jQuery(document).ready(function () {
-    var flag = false;
-    jQuery(window).scroll(function () {
-        var offset = jQuery(window).height();
-        var height = jQuery('#main').outerHeight(true);
-        var scroll = jQuery(window).scrollTop();
-        if (scroll >= (height - offset) && !flag) {
-            setTimeout(function () {
-                fr.bea_mas.counter.init();
-            }, 3000);
-            flag = true;
+(function($) {
+    var flag_ajax = false;
+
+    var waypoints = $('.entry-content').waypoint({
+        continuous: false,
+        handler: function(direction) {
+
+            fr.bea_mas.counter.init();
+            this.destroy()
         }
-    });
-});
+    })
 
-/**
-(function($){
-
-    $('.vu__filter input[type="radio"]').on('mouseenter', function () {
-        $('.vu__filter input[type="radio"]').prop('checked', false);
-        $(this).prop('checked', true);
-        console.log('hover');
+    $('.tooltip').tooltipster({
+        contentCloning: false,
+        theme: 'tooltipster-shadow',
     });
 
-    $('.vu__filter input[type="radio"]').on('click', function (e) {
-        e.preventDefault();
-        return false;
-    });
-
-    $(document).ready(function() {
-        // $('#menu1').dropit();
-        $('#menu1').dropit({
-            action: 'hover',
-            submenuEl: 'div'
-        });
-    });
-
-
-})(window.jQuery);**/
+})(window.jQuery);
