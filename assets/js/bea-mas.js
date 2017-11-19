@@ -13,7 +13,7 @@ if (!fr.bea_mas) {
 
 fr.bea_mas.counter = {
     ajaxing: false,
-    init: function() {
+    init: function () {
         jQuery.ajax({
             url: bea_mas.ajax_url,
             dataType: 'json',
@@ -22,10 +22,10 @@ fr.bea_mas.counter = {
                 _wpnonce: bea_mas.ajax_nonce,
                 id: bea_mas.current_object_id
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 fr.bea_mas.counter.ajaxing = true;
             },
-            success: function(response) {
+            success: function (response) {
                 fr.bea_mas.counter.ajaxing = false;
             }
         })
@@ -33,13 +33,12 @@ fr.bea_mas.counter = {
     }
 };
 
-(function($) {
+(function ($) {
     var flag_ajax = false;
 
-    var waypoints = $('.entry-content').waypoint({
+    var waypoints = $('.entry-content, .hkb-article__content').waypoint({
         continuous: false,
-        handler: function(direction) {
-
+        handler: function () {
             fr.bea_mas.counter.init();
             this.destroy()
         }
@@ -47,7 +46,7 @@ fr.bea_mas.counter = {
 
     $('.tooltip').tooltipster({
         contentCloning: false,
-        theme: 'tooltipster-shadow',
+        theme: 'tooltipster-shadow'
     });
 
 })(window.jQuery);

@@ -29,7 +29,9 @@ class Mas extends Shortcode {
 	 * @return string
 	 */
 	public function render( $attributes = array(), $content = '' ) {
-		if ( ! is_user_logged_in() ) {
+		global $post;
+
+		if ( ! is_user_logged_in() || $post->post_status != 'publish' ) {
 			return false;
 		}
 

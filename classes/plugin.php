@@ -35,10 +35,10 @@ class Plugin {
 		wp_register_style( 'tooltipster', BEA_MAS_URL . 'assets/js/tooltipster/dist/css/tooltipster.bundle.min.css', false, '4.0', 'all' );
 		wp_register_style( 'tooltipster-theme', BEA_MAS_URL . 'assets/js/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-shadow.min.css', false, '4.0', 'all' );
 		wp_register_script( 'tooltipster', BEA_MAS_URL . 'assets/js/tooltipster/dist/js/tooltipster.bundle.min.js', array( 'jquery' ), '4.0', true );
-		wp_register_script( 'waypoints', BEA_MAS_URL . 'assets/js/waypoints/lib/jquery.waypoints.min.js', array('jquery'), '4.0.1', true );
-		
+		wp_register_script( 'waypoints', BEA_MAS_URL . 'assets/js/waypoints/lib/jquery.waypoints.min.js', array( 'jquery' ), '4.0.1', true );
+
 		// Custom JS/CSS
-		wp_register_style ( 'bea-mas', BEA_MAS_URL . 'assets/css/bea-mas.css', false, BEA_MAS_VERSION, 'all' );
+		wp_register_style( 'bea-mas', BEA_MAS_URL . 'assets/css/bea-mas.css', false, BEA_MAS_VERSION, 'all' );
 		wp_register_script( 'bea-mas', BEA_MAS_URL . 'assets/js/bea-mas.js', array(
 			'jquery',
 			'tooltipster',
@@ -49,11 +49,13 @@ class Plugin {
 			'ajax_nonce'        => wp_create_nonce( 'bea_mas_' . get_the_ID() ),
 			'current_object_id' => get_the_ID(),
 		] );
+
+		return true;
 	}
 
 	/**
 	 * Enqueue only for singular view
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function wp_enqueue_scripts() {
@@ -78,7 +80,7 @@ class Plugin {
 
 	/**
 	 * Check AJAX request for set post meta if user
-	 * @return [type] [description]
+	 *
 	 */
 	public function wp_ajax_counter() {
 		// Check member
@@ -89,6 +91,12 @@ class Plugin {
 		// Get the member id
 		$object_id = (int) $_POST['id'];
 		$nonce     = self::generate_nonce_name( 'bea_mas', $object_id );
+
+		// Update counter only if post is published
+		$object = get_post( $object_id );
+		if ( $object === false || $object->post_status != 'publish' ) {
+			wp_send_json_error( array( 'message' => 'Article non publié ou non existant.' ) );
+		}
 
 		// Check the nonce
 		if ( ! self::check_nonce( $nonce ) ) {
@@ -113,10 +121,11 @@ class Plugin {
 
 	/**
 	 * Update meta with users array
-	 * 
+	 *
 	 * @param  integer $object_id [description]
-	 * @param  integer $user_id   [description]
-	 * @param  array  $has_read   [description]
+	 * @param  integer $user_id [description]
+	 * @param  array $has_read [description]
+	 *
 	 * @return boolean            [description]
 	 */
 	private static function update_counter( $object_id, $user_id, $has_read = [] ) {
@@ -128,6 +137,7 @@ class Plugin {
 		// check everything is ok
 		if ( false === $result ) {
 			wp_send_json_error( array( 'message' => 'Erreur de compteur' ) );
+
 			return false;
 		}
 
@@ -140,13 +150,14 @@ class Plugin {
 
 		return true;
 	}
-	
+
 	/**
 	 * Generate the nonce name from current user
-	 * 
-	 * @param  [type] $type      [description]
-	 * @param  [type] $object_id [description]
-	 * @return [type]            [description]
+	 *
+	 * @param  string $type      [description]
+	 * @param  integer $object_id [description]
+	 *
+	 * @return string            [description]
 	 */
 	public static function generate_nonce_name( $type, $object_id ) {
 		// Return the nonce name
@@ -155,10 +166,11 @@ class Plugin {
 
 	/**
 	 * Check nonce from request
-	 * 
-	 * @param  [type] $action [description]
-	 * @param  string $name   [description]
-	 * @return [type]         [description]
+	 *
+	 * @param  string $action [description]
+	 * @param  string $name [description]
+	 *
+	 * @return string         [description]
 	 */
 	public static function check_nonce( $action, $name = '_wpnonce' ) {
 		return ! isset( $_REQUEST[ $name ] ) || ! wp_verify_nonce( $_REQUEST[ $name ], $action ) ? false : true;

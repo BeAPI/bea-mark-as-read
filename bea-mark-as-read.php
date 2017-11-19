@@ -1,7 +1,7 @@
 <?php
 /*
  Plugin Name: BEA Mark As Read
- Version: 1.0.1
+ Version: 1.0.2
  Version Boilerplate: 2.1.6
  Plugin URI: https://beapi.fr
  Description: Your plugin description
