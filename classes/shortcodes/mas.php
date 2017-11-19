@@ -42,6 +42,8 @@ class Mas extends Shortcode {
 			$users_has_read    = array_map( function ( $user ) {
 				return new \WP_User( $user );
 			}, $users_has_read );
+		} else {
+			$users_has_read = array();
 		}
 
 		$users_has_no_read = array_map( function ( $user ) {
@@ -54,6 +56,5 @@ class Mas extends Shortcode {
 
 		return $output_html;
 	}
-
 
 }
