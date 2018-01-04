@@ -1,10 +1,9 @@
 <?php
 /*
  Plugin Name: BEA Mark As Read
- Version: 1.0.2
- Version Boilerplate: 2.1.6
+ Version: 1.1
  Plugin URI: https://beapi.fr
- Description: Your plugin description
+ Description: This plugin allow to track wh
  Author: Be API Technical team
  Author URI: https://beapi.fr
  Domain Path: languages
@@ -34,16 +33,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+// Plugin tables
+global $wpdb;
+$wpdb->tables[]     = 'mas_activity';
+$wpdb->mas_activity = $wpdb->prefix . 'mas_activity';
+
 // Plugin constants
-define( 'BEA_MAS_VERSION', time() );
-define( 'BEA_MAS_MIN_PHP_VERSION', '5.4' );
+define( 'BEA_MAS_VERSION', '1.1' );
+define( 'BEA_MAS_MIN_PHP_VERSION', '7.0' );
 define( 'BEA_MAS_VIEWS_FOLDER_NAME', 'bea-mas' );
 
 // Plugin URL and PATH
 define( 'BEA_MAS_URL', plugin_dir_url( __FILE__ ) );
 define( 'BEA_MAS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BEA_MAS_PLUGIN_DIRNAME', basename( rtrim( dirname( __FILE__ ), '/' ) ) );
-
 
 // Check PHP min version
 if ( version_compare( PHP_VERSION, BEA_MAS_MIN_PHP_VERSION, '<' ) ) {
@@ -61,6 +64,10 @@ if ( version_compare( PHP_VERSION, BEA_MAS_MIN_PHP_VERSION, '<' ) ) {
  */
 require_once BEA_MAS_DIR . 'autoload.php';
 
+// Plugin activate/deactive hooks
+register_activation_hook( __FILE__, array( '\BEA\MAS\Plugin', 'activate' ) );
+register_deactivation_hook( __FILE__, array( '\BEA\MAS\Plugin', 'deactivate' ) );
+
 add_action( 'plugins_loaded', 'init_bea_mark_as_read_plugin' );
 /**
  * Init the plugin
@@ -69,6 +76,10 @@ function init_bea_mark_as_read_plugin() {
 	// Client
 	\BEA\MAS\Main::get_instance();
 	\BEA\MAS\Plugin::get_instance();
+	\BEA\MAS\Model::get_instance();
+
+	// WP Cli
+	\BEA\MAS\WP_Cli\Main::get_instance();
 
 	// Shortcode
 	\BEA\MAS\Shortcodes\Shortcode_Factory::register( 'Mas' );

@@ -12,7 +12,6 @@ if (!fr.bea_mas) {
 }
 
 fr.bea_mas.counter = {
-    ajaxing: false,
     init: function () {
         jQuery.ajax({
             url: bea_mas.ajax_url,
@@ -21,12 +20,6 @@ fr.bea_mas.counter = {
             data: {
                 _wpnonce: bea_mas.ajax_nonce,
                 id: bea_mas.current_object_id
-            },
-            beforeSend: function () {
-                fr.bea_mas.counter.ajaxing = true;
-            },
-            success: function (response) {
-                fr.bea_mas.counter.ajaxing = false;
             }
         })
 

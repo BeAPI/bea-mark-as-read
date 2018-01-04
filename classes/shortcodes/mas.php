@@ -3,6 +3,7 @@
 namespace BEA\MAS\Shortcodes;
 
 use BEA\MAS\Helpers;
+use BEA\MAS\Model;
 
 /**
  * Class Mas
@@ -32,23 +33,10 @@ class Mas extends Shortcode {
 		global $post;
 
 		if ( ! is_user_logged_in() || $post->post_status != 'publish' ) {
-			return false;
+			return '';
 		}
 
-		$users_has_no_read = $all_users = get_users( [ 'fields' => 'ids' ] );
-		$users_has_read    = get_post_meta( get_the_ID(), 'bea_users_has_read', true );
-		if ( ! empty( $users_has_read ) ) {
-			$users_has_no_read = array_diff( $users_has_no_read, $users_has_read );
-			$users_has_read    = array_map( function ( $user ) {
-				return new \WP_User( $user );
-			}, $users_has_read );
-		} else {
-			$users_has_read = array();
-		}
-
-		$users_has_no_read = array_map( function ( $user ) {
-			return new \WP_User( $user );
-		}, $users_has_no_read );
+		$post_stats = Model::get_post_stats( get_the_ID() );
 
 		ob_start();
 		require( Helpers::locate_template( 'mas' ) );
