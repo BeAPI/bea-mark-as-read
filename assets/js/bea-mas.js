@@ -8,7 +8,7 @@ if (!fr) {
 if (!fr.bea_mas) {
     fr.bea_mas = {};
 } else if (typeof fr.bea_mas != "object") {
-    throw new Error('fr.cauet already exists and not an object');
+    throw new Error('fr.bea_mas already exists and not an object');
 }
 
 fr.bea_mas.counter = {
@@ -34,9 +34,8 @@ fr.bea_mas.counter = {
 };
 
 (function ($) {
-    var flag_ajax = false;
 
-    var waypoints = $('.entry-content, .hkb-article__content').waypoint({
+    $(bea_mas.jquery_target).waypoint({
         continuous: false,
         handler: function () {
             fr.bea_mas.counter.init();

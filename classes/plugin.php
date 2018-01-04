@@ -39,7 +39,7 @@ class Plugin {
 
 		// Custom JS/CSS
 		wp_register_style( 'bea-mas', BEA_MAS_URL . 'assets/css/bea-mas.css', false, BEA_MAS_VERSION, 'all' );
-		wp_register_script( 'bea-mas', BEA_MAS_URL . 'assets/js/bea-mas.js', array(
+		wp_register_script( 'bea-mas', BEA_MAS_URL . 'assets/js/bea-mas.min.js', array(
 			'jquery',
 			'tooltipster',
 			'waypoints'
@@ -48,6 +48,7 @@ class Plugin {
 			'ajax_url'          => admin_url( 'admin-ajax.php?action=bea_mas' ),
 			'ajax_nonce'        => wp_create_nonce( 'bea_mas_' . get_the_ID() ),
 			'current_object_id' => get_the_ID(),
+			'jquery_target'     => apply_filters( 'bea/mas/jquery_target', '.entry-content, .hkb-article__content' )
 		] );
 
 		return true;
@@ -85,7 +86,7 @@ class Plugin {
 	public function wp_ajax_counter() {
 		// Check member
 		if ( ! isset( $_POST['id'] ) || ! is_user_logged_in() || empty( $_POST['id'] ) ) {
-			wp_send_json_error( array( 'message' => 'Impossible d\'ajouter cet élément.' ) );
+			wp_send_json_error( array( 'message' => __( 'Impossible to add this element ID.', 'bea-mark-as-read' ) ) );
 		}
 
 		// Get the member id
@@ -95,12 +96,12 @@ class Plugin {
 		// Update counter only if post is published
 		$object = get_post( $object_id );
 		if ( $object === false || $object->post_status != 'publish' ) {
-			wp_send_json_error( array( 'message' => 'Article non publié ou non existant.' ) );
+			wp_send_json_error( array( 'message' => __( 'Post not exist or not published.', 'bea-mark-as-read' ) ) );
 		}
 
 		// Check the nonce
 		if ( ! self::check_nonce( $nonce ) ) {
-			wp_send_json_error( array( 'message' => 'Erreur de securité.' ) );
+			wp_send_json_error( array( 'message' => __( 'Security error', 'bea-mark-as-read' ) ) );
 		}
 
 		$user_id  = wp_get_current_user()->ID;
@@ -111,7 +112,7 @@ class Plugin {
 			if ( in_array( $user_id, $has_read ) ) {
 				// Send the message
 				wp_send_json_success( array(
-					'message' => 'Déjà vu !',
+					'message' => __( 'Already read !', 'bea-mark-as-read' ),
 				) );
 			} else {
 				self::update_counter( $object_id, $user_id, $has_read );
@@ -136,7 +137,7 @@ class Plugin {
 
 		// check everything is ok
 		if ( false === $result ) {
-			wp_send_json_error( array( 'message' => 'Erreur de compteur' ) );
+			wp_send_json_error( array( 'message' => __( 'An error occured during post meta update.', 'bea-mark-as-read' ) ) );
 
 			return false;
 		}
@@ -145,7 +146,7 @@ class Plugin {
 
 		// Send the message
 		wp_send_json_success( array(
-			'message' => 'Compteur à jour !',
+			'message' => __( 'Counter refreshed with success !', 'bea-mark-as-read' ),
 		) );
 
 		return true;
@@ -154,7 +155,7 @@ class Plugin {
 	/**
 	 * Generate the nonce name from current user
 	 *
-	 * @param  string $type      [description]
+	 * @param  string $type [description]
 	 * @param  integer $object_id [description]
 	 *
 	 * @return string            [description]

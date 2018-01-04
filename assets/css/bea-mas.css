@@ -1,25 +1,30 @@
 .tooltip_templates {
     display: none;
 }
+
 .vu__filter {
     display: block;
     width: 650px;
     padding: 10px;
 }
+
 .li_is_col {
     display: block;
     width: 300px;
     float: left;
 }
+
 .vu__filter label {
     font-weight: 700;
     display: block;
     margin: 0 0 10px 0;
 }
+
 .clear {
     clear: both;
     display: block;
 }
+
 .mas-tooltip {
     color: #e9608e;
     font-weight: 700;
