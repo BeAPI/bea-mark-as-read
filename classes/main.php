@@ -171,7 +171,7 @@ class Main {
 	 *
 	 * @return mixed
 	 */
-	public function wp_delete_post( $post_id = 0 ) {
+	public function after_delete_post( $post_id = 0 ) {
 		return Model::delete_by_post( $post_id );
 	}
 
