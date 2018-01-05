@@ -3,7 +3,7 @@
  Plugin Name: BEA Mark As Read
  Version: 1.1
  Plugin URI: https://beapi.fr
- Description: This plugin allow to track wh
+ Description: This plugin lets you know which user has read an article from your WordPress site. It also makes it possible to display this information (percentage of reading), a practical thing for intranet type use.
  Author: Be API Technical team
  Author URI: https://beapi.fr
  Domain Path: languages
